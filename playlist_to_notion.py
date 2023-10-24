@@ -26,11 +26,6 @@ for row in vodDbRows:
 
 newVideos = [v for (k,v) in playlistMap.items() if k not in vodDbMap]
 
-# Less Efficient
-# newVideos: List[PlaylistItem] = list(filter(lambda video: 
-#                     any((row['properties']['ID']['rich_text'][0]['plain_text'] == video.contentDetails.videoId) for row in vodDbRows),
-#                   playlistItems))
-
 print('Updating database...')
 count = 0
 for vid in newVideos:

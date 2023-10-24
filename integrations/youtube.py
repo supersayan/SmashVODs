@@ -10,9 +10,11 @@ youtubeOAuth = None
 
 def instantiateOAuthClient():
   cli = Client(client_id=os.environ['YOUTUBE_CLIENT_ID'], client_secret=os.environ['YOUTUBE_CLIENT_SECRET'])
-  print(cli.get_authorize_url())
-  token = input('Enter redirected url: ')
-  cli.generate_access_token(authorization_response=token)
+  authUrl = cli.get_authorize_url()
+  print(authUrl)
+  webbrowser.open(authUrl[0])
+  authResponse = input('Enter redirected url: ')
+  cli.generate_access_token(authorization_response=authResponse)
   global youtubeOAuth
   youtubeOAuth = cli
 
@@ -44,7 +46,6 @@ def pikaVodPlaylist():
 def addToPlaylist(videoId, playlistId = pikaVodPlaylistId):
   if not youtubeOAuth:
     instantiateOAuthClient()
-  print('Adding to playlist')
   return youtubeOAuth.playlistItems.insert(parts='snippet', body={
     'snippet': {
       'playlistId': playlistId,

@@ -39,8 +39,8 @@ for channelId, channelName in channels.items():
             if input("add? (y/n)") != "y":
                 continue
             addToPlaylist(vid.contentDetails.videoId)
-            # regexResults = extractDataFromTitle(title)
-            # notionAddVodToDb(vid, regexResults)
+            regexResults = extractDataFromTitle(title)
+            notionAddVodToDb(vid, regexResults)
             count += 1
 
 
