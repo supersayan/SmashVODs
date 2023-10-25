@@ -10,11 +10,15 @@ youtubeOAuth = None
 
 def instantiateOAuthClient():
   cli = Client(client_id=os.environ['YOUTUBE_CLIENT_ID'], client_secret=os.environ['YOUTUBE_CLIENT_SECRET'])
-  authUrl = cli.get_authorize_url()
-  print(authUrl)
-  webbrowser.open(authUrl[0])
-  authResponse = input('Enter redirected url: ')
-  cli.generate_access_token(authorization_response=authResponse)
+  if os.environ['YOUTUBE_REFRESH_TOKEN']:
+    cli.refresh_access_token(os.environ['YOUTUBE_REFRESH_TOKEN'])
+  else:
+    authUrl = cli.get_authorize_url()
+    print(authUrl)
+    webbrowser.open(authUrl[0])
+    authResponse = input('Enter redirected url: ')
+    cli.generate_access_token(authorization_response=authResponse)
+    os.environ['YOUTUBE_REFRESH_TOKEN'] = cli.refresh_token
   global youtubeOAuth
   youtubeOAuth = cli
 

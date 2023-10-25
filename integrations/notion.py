@@ -111,3 +111,13 @@ def notionUpdateVodMatchups(page_id, characters: list[str]):
       }
     }
   })
+
+def notionUpdateVodPlayer(page_id, players: list[str]):
+  notion.pages.update(**{
+    'page_id': page_id,
+    'properties': {
+      'Player': {
+        'multi_select': list({'name': p} for p in players) if players else []
+      },
+    }
+  })
