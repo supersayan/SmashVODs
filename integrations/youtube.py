@@ -1,24 +1,24 @@
-from dotenv import load_dotenv
+from dotenv import load_dotenv, set_key, dotenv_values
 import os
 from pyyoutube import Client
 import webbrowser
 
 load_dotenv()
 youtube = Client(api_key=os.environ['YOUTUBE_API_KEY'])
-
 youtubeOAuth = None
 
 def instantiateOAuthClient():
+  load_dotenv()
   cli = Client(client_id=os.environ['YOUTUBE_CLIENT_ID'], client_secret=os.environ['YOUTUBE_CLIENT_SECRET'])
-  if os.environ['YOUTUBE_REFRESH_TOKEN']:
-    cli.refresh_access_token(os.environ['YOUTUBE_REFRESH_TOKEN'])
-  else:
-    authUrl = cli.get_authorize_url()
-    print(authUrl)
-    webbrowser.open(authUrl[0])
-    authResponse = input('Enter redirected url: ')
-    cli.generate_access_token(authorization_response=authResponse)
-    os.environ['YOUTUBE_REFRESH_TOKEN'] = cli.refresh_token
+  # if 'YOUTUBE_REFRESH_TOKEN' in os.environ:
+  #   cli.refresh_access_token(os.environ['YOUTUBE_REFRESH_TOKEN'])
+  # else:
+  authUrl = cli.get_authorize_url()
+  print(authUrl)
+  # webbrowser.open(authUrl[0])
+  authResponse = input('Enter redirected url: ')
+  cli.generate_access_token(authorization_response=authResponse)
+  set_key(dotenv_path='integrations/.env', key_to_set='YOUTUBE_REFRESH_TOKEN', value_to_set=cli.refresh_token)
   global youtubeOAuth
   youtubeOAuth = cli
 

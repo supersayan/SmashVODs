@@ -20,7 +20,8 @@ pikaPlaylistSet = set()
 for vid in pikaVods:
   pikaPlaylistSet.add(vid.contentDetails.videoId)
 
-pikaRegex = "[\(（](?:Pikachu|ピカチュウ)[\)|）]"
+pikaRegex = r"[\(（](?:Pikachu|ピカチュウ)[\)|）]"
+channelCount = 0
 count = 0
 for channelId, channelName in channels.items():
     print(channelName)
@@ -36,12 +37,12 @@ for channelId, channelName in channels.items():
             continue
         if (vid.contentDetails.videoId not in pikaPlaylistSet):
             print(vid.snippet.title)
-            if input("add? (y/n)") != "y":
-                continue
             addToPlaylist(vid.contentDetails.videoId)
             regexResults = extractDataFromTitle(title)
             notionAddVodToDb(vid, regexResults)
             count += 1
-
+    channelCount += 1
+    if channelCount >= 30:
+        break
 
 print(f'Added {count} new videos')

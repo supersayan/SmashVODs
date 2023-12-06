@@ -14,9 +14,9 @@ Characters: relation
 '''
 
 # Use regex to get Player tags and Smash Characters
-startingDelim = "-\s|vs?\.?\s|\||—|–|:|\]|＞|戦|\/|SP"
+startingDelim = r"-\s|vs?\.?\s|\||—|–|:|\]|＞|戦|\/|SP\s"
 
-playerRegex = f"(?:^|(?:{startingDelim})\s*)((?:(?!{startingDelim}).)*?\S)\s?[\(（](.*?)[\)|）]"
+playerRegex = rf"(?:^|(?:{startingDelim})\s*)((?:(?!{startingDelim}).)*?\S)\s?[\(（](.*?)[\)|）]"
 
 def extractDataFromTitle(title: str):
   regexResults = {
@@ -29,13 +29,13 @@ def extractDataFromTitle(title: str):
   # Returns list of tuples [ (Player 1, Player 1 characters), (Player 2, Player 2 characters) ]
   for match in matches:
     characters = set()
-    for char in re.split('[,\/、]', match[1]):
+    for char in re.split(r'[,\/、]', match[1]):
       corrected = correctCharacter(char)
       if corrected:
         characters.add(corrected)
 
     if ('Pikachu' in characters):
-      regexResults['pikaPlayer'].add(match[0])
+      regexResults['pikaPlayer'].add(correctPlayer(match[0]) or match[0])
     elif len(characters) > 0:
       regexResults['characters'] = characters
       regexResults['otherPlayer'] = match[0]
