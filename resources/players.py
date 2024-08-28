@@ -11,6 +11,8 @@ pikaPlayerCorrections = {
   'Sho Limit': ['ショーリミ'],
   'Kishiru': ['キシル'],
   'ピロ': ['piro'],
+  'Yuzha': ['Yuzuha'],
+  'Hatsukami': ['ハツカミ/初雷', '初雷／ハツカミ', '初雷', 'ハツカミ']
 }
 
 pikaPlayerCorrectionsInverse = createLookupDict(pikaPlayerCorrections)

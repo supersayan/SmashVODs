@@ -15,7 +15,7 @@ characterCorrections: dict[str, list[str]] = {
   'Jigglypuff': ['Puff', 'プリン'],
   'Peach / Daisy': ['Peach', 'Daisy', 'Paisy', 'ピーチ', 'デイジー'],
   'Bowser': ['クッパ'],
-  'Ice Climbers': ['アイスクライマー'],
+  'Ice Climbers': ['アイスクライマー', 'Icies'],
   'Sheik': ['Shiek', 'シーク'],
   'Zelda': ['ゼルダ'],
   'Dr. Mario': ['Dr Mario', 'ドクターマリオ', 'Doc'],

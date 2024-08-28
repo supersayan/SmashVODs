@@ -1,26 +1,55 @@
-from dotenv import load_dotenv, set_key, dotenv_values
+import threading
+from dotenv import load_dotenv, set_key
 import os
 from pyyoutube import Client
 import webbrowser
+from http.server import SimpleHTTPRequestHandler, HTTPServer
+import ssl
 
 load_dotenv()
 youtube = Client(api_key=os.environ['YOUTUBE_API_KEY'])
 youtubeOAuth = None
 
+REDIRECT_URI_PORT = 2274
+
 def instantiateOAuthClient():
   load_dotenv()
   cli = Client(client_id=os.environ['YOUTUBE_CLIENT_ID'], client_secret=os.environ['YOUTUBE_CLIENT_SECRET'])
-  # if 'YOUTUBE_REFRESH_TOKEN' in os.environ:
-  #   cli.refresh_access_token(os.environ['YOUTUBE_REFRESH_TOKEN'])
-  # else:
-  authUrl = cli.get_authorize_url()
-  print(authUrl)
-  # webbrowser.open(authUrl[0])
-  authResponse = input('Enter redirected url: ')
-  cli.generate_access_token(authorization_response=authResponse)
-  set_key(dotenv_path='integrations/.env', key_to_set='YOUTUBE_REFRESH_TOKEN', value_to_set=cli.refresh_token)
+  if 'YOUTUBE_REFRESH_TOKEN' in os.environ:
+    cli.refresh_access_token(os.environ['YOUTUBE_REFRESH_TOKEN'])
+    if (cli.access_token is not None):
+      return
+
+  authUrl = cli.get_authorize_url(redirect_uri=f'https://localhost:{REDIRECT_URI_PORT}/')
+
   global youtubeOAuth
   youtubeOAuth = cli
+
+  httpd = HTTPServer(('localhost', REDIRECT_URI_PORT), ServerHandler)
+  context = get_ssl_context("cert.pem", "key.pem")
+  httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
+  webbrowser.open(authUrl[0])
+  httpd.serve_forever()
+
+  # while (youtubeOAuth.access_token is None):
+  #   time.sleep(5)
+  # time.sleep(30)
+  # print(youtubeOAuth.access_token)
+  # httpd.server_close()
+  # set_key(dotenv_path='integrations/.env', key_to_set='YOUTUBE_REFRESH_TOKEN', value_to_set=cli.refresh_token)
+
+class ServerHandler(SimpleHTTPRequestHandler):
+  def do_GET(self):
+    try:
+      authResponse = f'https://localhost:{REDIRECT_URI_PORT}{self.path}'
+      youtubeOAuth.generate_access_token(authorization_response=authResponse, redirect_uri=f'https://localhost:{REDIRECT_URI_PORT}/')
+      set_key(dotenv_path='integrations/.env', key_to_set='YOUTUBE_REFRESH_TOKEN', value_to_set=youtubeOAuth.refresh_token)
+      self.send_response(200)
+      self.end_headers()
+    finally:
+      t = threading.Thread(target = self.server.shutdown)
+      t.daemon = True
+      t.start()
 
 pikaVodPlaylistId = 'PLc-VgMHSQbqkcN-jPP2GqLUcH7MR-_DJm'
 
@@ -40,8 +69,6 @@ def youtubePlaylistListAll(playlistId: str, pageLimit: int = 0):
     nextPageToken = playlistResponse.nextPageToken
     count -= 1
 
-  pages = (count - pageLimit) * -1
-
   return playlistItems
 
 def pikaVodPlaylist():
@@ -50,6 +77,7 @@ def pikaVodPlaylist():
 def addToPlaylist(videoId, playlistId = pikaVodPlaylistId):
   if not youtubeOAuth:
     instantiateOAuthClient()
+    print('Youtube OAuth success')
   return youtubeOAuth.playlistItems.insert(parts='snippet', body={
     'snippet': {
       'playlistId': playlistId,
@@ -59,3 +87,11 @@ def addToPlaylist(videoId, playlistId = pikaVodPlaylistId):
       }
     }
   })
+
+def get_ssl_context(certfile, keyfile):
+  context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+  context.load_cert_chain(os.path.join(os.path.dirname(__file__), certfile), os.path.join(os.path.dirname(__file__), keyfile))
+  context.set_ciphers("@SECLEVEL=1:ALL")
+  return context
+# Command used to create cert and key files:
+# openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout key.pem -out cert.pem
