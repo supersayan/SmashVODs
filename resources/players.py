@@ -2,8 +2,8 @@ from util import createLookupDict, lookup
 
 pikaPlayerCorrections = {
   'ShinyMark': ['Shory\'s  ShinyMark'],
-  'G-XTREME': ['G XTREME', 'XTREME'],
-  'Jiggs': ['Big Jiggs'],
+  'G-XTREME': ['G XTREME', 'XTREME', 'G-Extreme'],
+  'Jiggs': ['Big Jiggs', 'Usain Jolt'],
   'H4': ['H4DS', 'BiB H4'],
   'Enki': ['IZI Enki'],
   'ESAM': ['PG ESAM'],
@@ -15,7 +15,7 @@ pikaPlayerCorrections = {
   'Hatsukami': ['ハツカミ/初雷', '初雷／ハツカミ', '初雷', 'ハツカミ']
 }
 
-pikaPlayerCorrectionsInverse = createLookupDict(pikaPlayerCorrections)
+pikaPlayerLookup = createLookupDict(pikaPlayerCorrections)
 
 def correctPlayer(tag: str):
-  return lookup(tag, pikaPlayerCorrectionsInverse)
+  return lookup(tag, pikaPlayerLookup)

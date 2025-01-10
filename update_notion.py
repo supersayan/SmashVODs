@@ -1,5 +1,5 @@
 from integrations.notion import vodDb, notionUpdateVodMatchups, notionUpdateVodPlayer
-from resources.players import pikaPlayerCorrectionsInverse, correctPlayer
+from resources.players import pikaPlayerLookup, correctPlayer
 
 print('Getting VOD database...')
 vodDbRows = vodDb()

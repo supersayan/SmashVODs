@@ -44,7 +44,7 @@ characterCorrections: dict[str, list[str]] = {
   'Olimar': ['Alph', 'ピクミン&オリマー'],
   'Lucario': ['ルカリオ'],
   'R.O.B.': ['ROB', 'R.O.B', 'ロボット'],
-  'Toon Link': ['TLink', 'トゥーンリンク'],
+  'Toon Link': ['TL', 'TLink', 'トゥーンリンク'],
   'Wolf': ['ウルフ'],
   'Villager': ['むらびと'],
   'Mega Man': ['Mega-man', 'ロックマン'],
@@ -59,7 +59,8 @@ characterCorrections: dict[str, list[str]] = {
   'Pac-Man': ['Pac man', 'パックマン'],
   'Robin': ['ルフレ', 'Daraen'],
   'Shulk': ['シュルク'],
-  'Bowser Jr.': ['Bowser Jr', 'Koopaling', 'Larry', 'Wendy', 'Iggy', 'Morton', 'Lemmy', 'Ludwig', 'クッパJr.'],
+  'Bowser Jr.': ['Bowser Jr', 'Koopaling', 'Larry', 'Wendy', 'Iggy', 'Morton', 'Lemmy', 'Ludwig', 'クッパJr.',
+                 'ラリー', 'モートン', 'ウェンディ', 'イギー', 'レミー', 'ルドウィッグ'],
   'Duck Hunt': ['Duck Hunt Duo', 'DH', 'ダックハント'],
   'Ryu': ['リュウ'],
   'Ken': ['ケン'],
@@ -81,15 +82,15 @@ characterCorrections: dict[str, list[str]] = {
   'Min Min': ['ミェンミェン'],
   'Steve': ['Steve & Alex', 'Alex', 'Zombie', 'Enderman', 'スティーブ', 'アレックス', 'ゾンビ', 'エンダーマン'],
   'Sephiroth': ['セフィロス'],
-  'Pyra & Mythra': ['Aegis', 'Pyra', 'Mythra', 'Pyra Mythra', 'Pyra and Mythra', 'ホムラ', 'ヒカリ'],
+  'Pyra & Mythra': ['Aegis', 'Pyra', 'Mythra', 'Pyra Mythra', 'Pyra and Mythra', 'Pythra', 'ホムラ', 'ヒカリ'],
   'Kazuya': ['カズヤ'],
   'Sora': ['ソラ'],
 }
 
-characterCorrectionsInverse = createLookupDict(characterCorrections)
+characterKeyLookup = createLookupDict(characterCorrections)
 
 def correctCharacter(name: str):
-  res = lookup(name, characterCorrectionsInverse)
+  res = lookup(name, characterKeyLookup)
   if res:
     return res
   elif name in characterCorrections:

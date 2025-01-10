@@ -5,6 +5,7 @@ from pyyoutube import Client
 import webbrowser
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 import ssl
+import logging
 
 load_dotenv()
 youtube = Client(api_key=os.environ['YOUTUBE_API_KEY'])
@@ -28,6 +29,7 @@ def instantiateOAuthClient():
   httpd = HTTPServer(('localhost', REDIRECT_URI_PORT), ServerHandler)
   context = get_ssl_context("cert.pem", "key.pem")
   httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
+  logging.info(f'authorization URL: {authUrl[0]}')
   webbrowser.open(authUrl[0])
   httpd.serve_forever()
 
@@ -77,7 +79,11 @@ def pikaVodPlaylist():
 def addToPlaylist(videoId, playlistId = pikaVodPlaylistId):
   if not youtubeOAuth:
     instantiateOAuthClient()
-    print('Youtube OAuth success')
+    if youtubeOAuth is not None:
+      logging.info('Youtube OAuth success')
+    else:
+      logging.error('Youtube OAuth failed')
+  logging.debug('Inserting item to playlist...')
   return youtubeOAuth.playlistItems.insert(parts='snippet', body={
     'snippet': {
       'playlistId': playlistId,
