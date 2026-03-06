@@ -36,8 +36,8 @@ def extractDataFromTitle(title: str):
 
     if ('Pikachu' in characters):
       regexResults['pikaPlayer'].add(correctPlayer(match[0]) or match[0])
-    elif len(characters) > 0:
-      regexResults['characters'] = characters
+    else:
+      regexResults['characters'].update(characters)
       regexResults['otherPlayer'] = match[0]
 
   if (len(regexResults['pikaPlayer']) > 1):

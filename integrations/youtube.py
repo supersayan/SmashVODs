@@ -45,7 +45,12 @@ class ServerHandler(SimpleHTTPRequestHandler):
     try:
       authResponse = f'https://localhost:{REDIRECT_URI_PORT}{self.path}'
       youtubeOAuth.generate_access_token(authorization_response=authResponse, redirect_uri=f'https://localhost:{REDIRECT_URI_PORT}/')
-      set_key(dotenv_path='integrations/.env', key_to_set='YOUTUBE_REFRESH_TOKEN', value_to_set=youtubeOAuth.refresh_token)
+      if (youtubeOAuth.refresh_token is not None):
+        set_key(dotenv_path='integrations/.env', key_to_set='YOUTUBE_REFRESH_TOKEN', value_to_set=youtubeOAuth.refresh_token)
+      html_content = """
+        Authentication success. You may now close this page.
+        """
+      self.wfile.write(html_content.encode('utf-8'))
       self.send_response(200)
       self.end_headers()
     finally:

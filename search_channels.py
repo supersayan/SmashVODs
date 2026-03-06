@@ -33,7 +33,7 @@ for channelId, channelName in sorted(channels.items()):
         title = vid.snippet.title
         if (re.search(pikaRegex, title) is None):
             continue
-        if (re.search('Melee|SSBM|SSB4|Sm4sh|Smash 4|Reverse Mains|SSB64|Smash 64|SSBB|Smash Brawl', title) is not None):
+        if (re.search('Melee|SSBM|SSB4|Sm4sh|Smash 4|Reverse Mains|SSB64|Smash 64|SSBB|Smash Brawl|HDR', title, flags=re.IGNORECASE) is not None):
             continue
         if (vid.contentDetails.videoId not in pikaPlaylistSet):
             print(f'** NEW: {vid.snippet.title}')

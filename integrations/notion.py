@@ -9,7 +9,9 @@ vodDatabaseId = '6843861011ef432090f3a16aee2086f5'
 characterDatabaseId = '87d929c5c0154a34bbdd2b5f3507d844'
 
 def notionGetDb(database_id: str, start_cursor: str = None):
-  return notion.databases.query(database_id=database_id, start_cursor=start_cursor)
+  db = notion.databases.retrieve(database_id=database_id, start_cursor=start_cursor)
+  data_source_id = db.get('data_sources')[0].get('id')
+  return notion.data_sources.query(data_source_id=data_source_id, start_cursor=start_cursor)
 
 def notionGetDbFull(database_id: str):
   queryResponse = notionGetDb(database_id)
